@@ -1,0 +1,49 @@
+﻿<br />
+<div class="container" id="form"></div>
+
+<script>
+    var test = JsonToForm('@ViewBag.Context')
+        test.appendTo($("#form"));
+        function JsonToForm(jstring) {
+
+            var obj = JSON.parse(jstring);
+
+
+
+            var place = $("<div>").addClass("panel panel-default text-left");
+
+            var header = $("<div>").addClass("panel-heading").appendTo(place);
+
+            var body = $("<div>").addClass("panel-body").appendTo(place);
+
+            var footer = $("<div>").addClass("panel-footer").appendTo(place);
+
+            $.each(obj.fields, function () {
+
+
+
+                var foco = $("<div>").addClass("form-group").appendTo(body);
+
+                $("<label>").text(this.name).appendTo(foco);
+
+                var type = "";
+
+                switch (this.dataType) {
+
+                    case "String": type = "text";
+
+                        break;
+
+                    case "Number": type = "number";
+
+                        break;
+
+                    case "Date": type = "date";
+
+                        break;
+                }
+                $("<input>").addClass("form-control").attr({ "name": this.name, "type": type }).prop("required", (this.required == "true")).appendTo(foco);
+            })
+            return place;
+        }
+</script>

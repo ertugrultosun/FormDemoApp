@@ -1,0 +1,135 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+
+
+@if (Session["UserId"] == null)
+{
+    <br />
+    <div class="jumbotron">
+        <h1>Dynamic Form Application</h1>
+        <p class="lead">Please register or login for add new forms or see created forms...</p>
+        <p>@Html.ActionLink("Login", "Login", "Home")  or  @Html.ActionLink("register", "Register", "Home")</p>
+    </div>
+}
+else
+{
+    if (@ViewBag.Model != null)
+    {
+        <table class="table">
+            <tr>
+                <th>
+                    Id
+                </th>
+                <th>
+                    Create Date
+                </th>
+                <th>
+                    Context
+                </th>
+                <th>
+                    Actions
+                </th>
+            </tr>
+
+            @foreach (var item in ViewBag.Model)
+            {
+            <tr>
+                <td>
+                    @item.id
+                </td>
+                <td>
+                    @item.created_at
+                </td>
+                <td>
+                    @item.context
+                </td>
+                <td>
+                    @Html.ActionLink("Details", "FormDetail", new { id = item.id })
+                </td>
+            </tr>
+            }
+
+        </table>
+    }
+    else
+    {
+        <br />
+        <div class="jumbotron">
+            <h1>Dynamic Form Application</h1>
+            <p class="lead">You dont have any forms.. Please add a new one!</p>
+            <p><a data-toggle="modal" data-target="#addModal">Add Form</a></p>
+        </div>
+    }
+    <div class="container text-center">
+        <!-- Modal -->
+        <div id="addModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Âdd New Form</div>
+                        <div class="panel-body text-left">
+                            <div class="form-group">
+                                <label for="formname">Form Name</label>
+                                <input type="text" class="form-control" id="formname" name="formname" value="" />
+                            </div>
+                            <div class="form-group">
+                                <label for="formdesc">Form Desc</label>
+                                <textarea class="form-control" id="formdesc" name="formdesc"></textarea>
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-addon">Element Name</span>
+                                <input type="text" class="form-control el" name="name" value="" />
+                                <span class="input-group-addon">Element Type</span>
+                                <select class="form-control el" name="dataType">
+                                    <option value="Number">Number</option>
+                                    <option value="String">String</option>
+                                    <option value="Date">Date</option>
+                                </select>
+                                <span class="input-group-addon">Element is Required</span>
+                                <input type="checkbox" class="checkbox-inline el" name="required" value="true" />
+
+                                <span class="input-group-btn">
+                                    <input type="button" id="AddBtn" class="btn btn-default" name="AddBtn" value="+ Add" />
+                                </span>
+                            </div>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            Name
+                                        </th>
+                                        <th>
+                                            Type
+                                        </th>
+                                        <th>
+                                            Required
+                                        </th>
+                                        <th>
+
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="el-body"></tbody>
+                            </table>
+                        </div>
+                        <div class="panel-footer">
+                            <button id="saveEls">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="test" id="test"></div>
+    </div>
+}
+
+
+
+
+
+
+
+

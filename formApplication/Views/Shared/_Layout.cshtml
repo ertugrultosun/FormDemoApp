@@ -1,0 +1,158 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                    @if (Session["UserId"] == null)
+                    {
+                        <li>@Html.ActionLink("Login", "Login", "Home")</li>
+                        <li>@Html.ActionLink("Register", "Register", "Home")</li>
+                    }
+                    else
+                    {
+                        <li><a data-toggle="modal" data-target="#addModal">Add Form</a></li>
+                        <li>@Html.ActionLink("Logout", "Logout", "Home")</li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - Dynamic form Demo Application</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+<script>
+    $(function () {
+
+        $("#AddBtn").click(function () {
+            var tr = $("<tr>").appendTo($("#el-body"));
+            $(".el").each(function () {
+
+                var el = $(this);
+                if (el.attr("type") == "checkbox") {
+                    $("<td>").attr("data-name", "required").text(el.prop("checked")).appendTo(tr);
+                    el.prop("checked", false);
+                }
+                else
+                    $("<td>").attr("data-name", el.attr("name")).text(el.val()).appendTo(tr);
+
+            })
+            var td = $("<td>").appendTo(tr);
+            $("<button>").addClass("btn btn-danger row-del").text("Delete").appendTo(td);
+
+        })
+
+        $(document).on("click", ".row-del", function () {
+
+            $(this).parents("tr").remove();
+        })
+        $("#saveEls").click(function () {
+
+            var dict = {};
+            var fields = [];
+            dict["name"] = $("#formname").val();
+            dict["desc"] = $("#formdesc").val();
+
+            $("#el-body>tr").each(function () {
+                var el = {};
+                el["name"] = $(this).children("td[data-name=name]").text();
+                el["dataType"] = $(this).children("td[data-name=dataType]").text();
+                el["required"] = $(this).children("td[data-name=required]").text() == "" ? "false" : "true";
+                fields.push(el);
+            })
+
+
+            dict["fields"] = fields;
+
+            $.post("@Url.Action("AddForm","Home")", { json: JSON.stringify(dict) }, function (data) {
+
+                if (!data.success)
+                    alert("Error")
+                else
+                    window.location = "@Url.Action("index","Home")";
+
+            })
+            //alert(JSON.stringify(dict));
+        })
+        var test = JsonToForm('{"name":"asd123","desc":"asd456","fields":[{"name":"test","dataType":"String","required":"true"},{"name":"test1","dataType":"String","required":"true"},{"name":"test2","dataType":"String","required":"true"}]}')
+        test.appendTo($("#form"));
+        function JsonToForm(jstring) {
+
+            var obj = JSON.parse(jstring);
+
+
+
+            var place = $("<div>").addClass("panel panel-default text-left");
+
+            var header = $("<div>").addClass("panel-heading").appendTo(place);
+
+            var body = $("<div>").addClass("panel-body").appendTo(place);
+
+            var footer = $("<div>").addClass("panel-footer").appendTo(place);
+
+            $.each(obj.fields, function () {
+
+
+
+                var foco = $("<div>").addClass("form-group").appendTo(body);
+
+                $("<label>").text(this.name).appendTo(foco);
+
+                var type = "";
+
+                switch (this.dataType) {
+
+                    case "String": type = "text";
+
+                        break;
+
+                    case "Number": type = "number";
+
+                        break;
+
+                    case "Date": type = "date";
+
+                        break;
+
+                }
+
+                $("<input>").addClass("form-control").attr({ "name": this.name, "type": type }).prop("required", (this.required == "true")).appendTo(foco);
+
+            })
+
+
+
+            return place;
+
+        }
+
+
+    })
+</script>
+</html>

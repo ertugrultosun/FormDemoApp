@@ -1,0 +1,62 @@
+﻿@model formApplication.Models.User
+
+
+@using (Html.BeginForm("RegisterAction", "Home", FormMethod.Post)) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4>Register</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-group">
+        <p class="control-label col-md-2">First Name</p>
+        
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.first_name, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.first_name, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+        <div class="form-group">
+            <p class = "control-label col-md-2">Last Name</p>
+            
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.last_name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.last_name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <p class="control-label col-md-2">Password</p>
+            
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.secret, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.secret, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <p class="control-label col-md-2">E-Mail</p>
+            
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.email, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.email, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Register" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to Main Page", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
